@@ -1,5 +1,4 @@
 import abc
-import json
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -66,14 +65,13 @@ class BinancePriceRepo(BasePriceRepo):
                                   ORDER BY ID""")
             db_binance_data = cursor.fetchall()
         binance_dataset = data_converter(db_binance_data)
-        with open('jsons/binance.json', 'w') as out_file:
-            json.dump(binance_dataset, out_file)
+        return binance_dataset
 
     async def insert(self, binance_data: PriceRecord):
         with connection.cursor() as cursor:
-            cursor.execute("""INSERT INTO binance_data (val, time_received, price)
-                           VALUES (%s, %s, %s);""",
-                           (binance_data.quote, binance_data.time_received, binance_data.last_price))
+            cursor.execute("""INSERT INTO binance_data (time_received, price)
+                           VALUES (%s, %s);""",
+                           (binance_data.time_received, binance_data.last_price))
 
 
 class CentralBankRepo(BasePriceRepo):
@@ -86,8 +84,7 @@ class CentralBankRepo(BasePriceRepo):
             db_cb_data = cursor.fetchall()
         cb_dataset = data_converter(db_cb_data)
         cb_dataset = line_endpoint(cb_dataset)
-        with open('jsons/cb.json', 'w') as out_file:
-            json.dump(cb_dataset, out_file)
+        return cb_dataset
 
     async def insert(self, cb_data: PriceRecord):
         with connection.cursor() as cursor:
