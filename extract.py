@@ -1,18 +1,12 @@
 import abc
 import asyncio
-import datetime
-import json
 import logging
 import requests
 import os
 from asyncio import sleep
 from enum import Enum
-from string import Template
-from typing import Optional
 
-import aiohttp
 from bs4 import BeautifulSoup
-import websockets
 from binance import AsyncClient
 
 from repo import PriceRecord, BasePriceRepo
@@ -41,22 +35,6 @@ class ChannelStatus(Enum):
     ERROR = 16
 
 
-class Channel:
-    def __init__(self, connection, symbol: str, status: Optional[ChannelStatus]):
-        self.connection = connection
-        self.symbol = symbol
-        self.status = status
-
-
-class BitfinexChannel(Channel):
-    def __init__(self, connection, symbol: str, status: Optional[ChannelStatus], channel_id: Optional[str]):
-        super().__init__(connection, symbol, status)
-        self.channel_id = channel_id
-
-    def __str__(self):
-        return f'BitfinexChannel(channel_id={self.channel_id}, symbol={self.symbol}, status={self.status})'
-
-
 class BaseExtractor(abc.ABC):
     def __init__(self, repo: BasePriceRepo):
         self.repo = repo
@@ -65,9 +43,6 @@ class BaseExtractor(abc.ABC):
     @abc.abstractmethod
     async def run(self):
         pass
-
-    async def save(self, price_record):
-        await self.repo.insert(price_record)
 
 
 class BinanceExtractor(BaseExtractor):
@@ -107,16 +82,16 @@ class BinanceExtractor(BaseExtractor):
 class CentralBankExtractor(BaseExtractor):
     async def run(self):
         while True:
-            response = requests.get('http://www.cbr.ru/scripts/XML_daily.asp').text
-            soup = BeautifulSoup(response)
-            price = soup.findAll("valute", {"id": "R01235"})[0].select('value')[0].getText()
-            price = float(price.replace(',', '.'))
-            cb_data = PriceRecord(exchange='CentralBank',
-                                  symbol='0',
-                                  base='0',
-                                  quote='0',
-                                  last_price=price
-                                  )
-            await self.repo.insert(cb_data), asyncio.sleep(HOURS_AWAIT)
-
-
+            for i in range(1):
+                response = requests.get('http://www.cbr.ru/scripts/XML_daily.asp').text
+                soup = BeautifulSoup(response)
+                price = soup.findAll("valute", {"id": "R01235"})[0].select('value')[0].getText()
+                price = float(price.replace(',', '.'))
+                cb_data = PriceRecord(exchange='CentralBank',
+                                      symbol='0',
+                                      base='0',
+                                      quote='0',
+                                      last_price=price
+                                      )
+                await self.repo.insert(cb_data)
+            await asyncio.sleep(HOURS_AWAIT)

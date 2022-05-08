@@ -1,0 +1,72 @@
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+<style>
+    #container {
+        height: 400px;
+        min-width: 310px;
+        }
+</style>
+<div id="container"></div>
+<script>var seriesOptions = [],
+  seriesCounter = 0,
+  names = ['CB', 'BINANCE'];
+function createChart() {
+  Highcharts.setOptions({
+    time: {
+        useUTC: false
+    }
+});
+  Highcharts.stockChart('container', {
+    rangeSelector: {
+      selected: 4
+    },
+    yAxis: {
+      labels: {
+        formatter: function () {
+          return (this.value > 0 ? '  ' : '') + this.value + '$';
+        }
+      },
+      plotLines: [{
+        value: 0,
+        width: 2,
+        color: 'silver'
+      }]
+    },
+    plotOptions: {
+      series: {
+        compare: 'line',
+        showInNavigator: true
+      }
+    },
+    tooltip: {
+      pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}$)<br/>',
+      valueDecimals: 2,
+      split: true
+    },
+    series: seriesOptions
+  });
+}
+function success(data) {
+  var name = this.url.match(/(cb|binance)/)[0].toUpperCase();
+  var i = names.indexOf(name);
+  seriesOptions[i] = {
+    name: name,
+    data: data
+  };
+  seriesCounter += 1;
+  if (seriesCounter === names.length) {
+    createChart();
+  }
+}
+Highcharts.getJSON(
+  'cb.json',
+  success
+);
+Highcharts.getJSON(
+  'binance.json',
+  success
+);
+</script>
