@@ -31,7 +31,7 @@ async def binance_chart_data():
 class ChartStarter:
     @staticmethod
     def starter():
-        uvicorn.run(application, host='127.0.0.1', port='8220')
+        uvicorn.run(application, host="127.0.0.1", port=8220)
 
 
 ChartStarter.starter()
