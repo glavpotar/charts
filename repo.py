@@ -3,15 +3,17 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 import psycopg2
+import yaml
 
-from host import *
+with open('host.yml') as config_file:
+    config = yaml.load(config_file, Loader=yaml.FullLoader)
 
 
 connection = psycopg2.connect(
-    host=host,
-    user=user,
-    password=password,
-    database=db_name
+    host=config['host'],
+    user=config['user'],
+    password=config['password'],
+    database=config['database']
 )
 connection.autocommit = True
 
