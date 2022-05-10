@@ -7,7 +7,6 @@ from repo import BinancePriceRepo, CentralBankRepo
 async def main():
     binance_repo = BinancePriceRepo()
     cb_repo = CentralBankRepo()
-
     extractors = [BinanceExtractor(binance_repo), CentralBankExtractor(cb_repo)]
 
     for extractor in extractors:
