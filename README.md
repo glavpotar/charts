@@ -18,10 +18,15 @@
 <h3>Columns</h3>
 <ul>
     <li>id - ()int. type - identity</li>
-    <li>time_received - charvar</li>
-    <li>price - charvar</li>
+    <li>time_received - varchar.</li>
+    <li>price - numeric</li>
 </ul>
 <div align="center"><img src="db_demo.png"></div>
+
+<br><br>
+
+<h2>Config structure</h2>
+<div align="center"><img src="yaml_demo.png"></div>
 
 <br><br>
 
@@ -29,8 +34,29 @@
 <h4>as long as uvicorn have troubles running asynchronously,
     we have to run "main.py" and "headapi.py" separately</h4>
     <ul>
-    <li>run "main.py"</li>
-    <li>run "headapi.py"</li>
+    <li> 0. create "host.yml"</li>
+    <ul>
+    <li> example above </li>
+    </ul>
+    <br>
+    <li> 1. install libs </li>
+    <ul>
+    <li> $pip install -r requirements.txt</li>
+    </ul>
+    <br>
+    <li> 2. run "db_create.py"</li>
+    <ul>
+    <li> $python3 db_create.py </li>
+    </ul>
+    <br>
+    <li> 3. run "main.py"</li>
+    <ul>
+    <li> $python3 main.py </li>
+    </ul>
+    <br>
+    <li> 4.run "headapi.py"</li>
+    <ul>
+    <li> $python3 headapi.py </li>
         <ul>
         <li>127.0.0.1:8220 by default</li>
         </ul>
