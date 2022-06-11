@@ -14,21 +14,6 @@
 
 <br><br>
 
-<h2>Database structure</h2>
-<h3>central_bank_data/binance_data: Columns</h3>
-<ul>
-    <li>id - ()int. type - identity</li>
-    <li>time_received - varchar</li>
-    <li>price - numeric</li>
-</ul>
-<div align="center"><img src="images/db_demo.png"></div>
-<h3>pushy_users</h3>
-<ul>
-    <li>id - ()int. type - identity</li>
-    <li>device_token - varchar</li>
-</ul>
-<div align="center"><img src="images/pushy_demo.png"></div>
-<br><br>
 
 <h2>Config structure</h2>
 <div align="center"><img src="images/yaml_demo.png"></div>
