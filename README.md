@@ -15,14 +15,19 @@
 <br><br>
 
 <h2>Database structure</h2>
-<h3>Columns</h3>
+<h3>central_bank_data/binance_data: Columns</h3>
 <ul>
     <li>id - ()int. type - identity</li>
-    <li>time_received - varchar.</li>
+    <li>time_received - varchar</li>
     <li>price - numeric</li>
 </ul>
 <div align="center"><img src="db_demo.png"></div>
-
+<h3>pushy_users</h3>
+<ul>
+    <li>id - ()int. type - identity</li>
+    <li>device_token - varchar</li>
+</ul>
+<div align="center"><img src="images/pushy_demo.png"></div>
 <br><br>
 
 <h2>Config structure</h2>
@@ -44,14 +49,14 @@
     <li> $pip install -r requirements.txt</li>
     </ul>
     <br>
-    <li> 2. run "db_create.py"</li>
+    <li> 2. create db with name of "charts_data" and use migrations</li>
     <ul>
-    <li> $python3 db_create.py </li>
+    <li> yoyo apply -d postgresql://<USERNAME>@<HOST>/charts_data </li>
     </ul>
     <br>
-    <li> 3. run "main.py"</li>
+    <li> 3. create session with proper credentials at "create_session.py" </li>
     <ul>
-    <li> $python3 main.py </li>
+    <li> $python3 create_session.py </li>
     </ul>
     <br>
     <li> 4.run "headapi.py"</li>
