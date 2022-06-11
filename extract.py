@@ -1,5 +1,6 @@
 import abc
 import asyncio
+import datetime
 import logging
 import requests
 import os
@@ -10,9 +11,9 @@ from bs4 import BeautifulSoup
 from binance import AsyncClient
 
 from repo import PriceRecord, BasePriceRepo
+from config_reader import config
 
 
-HOURS_AWAIT = 3600
 
 logger = logging.getLogger(__name__)
 fileHandler = logging.StreamHandler()
@@ -61,22 +62,57 @@ class BinanceExtractor(BaseExtractor):
         exchange_info = await client.get_exchange_info()
         symbols_mapping = self.get_symbol_mapping(exchange_info)
         logger.info(f'got exchange info from Binance: {len(symbols_mapping)} symbols exist')
-
+        drop = 0
         while True:
-            tickers = await client.get_all_tickers()
-            logger.debug(f'Binance {tickers=}')
-            for symbol in tickers:
-                base, quote = symbols_mapping[symbol['symbol']]
-                if base != 'USDT' or quote != 'RUB':
+            try:
+                tickers = await client.get_all_tickers()
+                logger.debug(f'Binance {tickers=}')
+                for symbol in tickers:
+                    base, quote = symbols_mapping[symbol['symbol']]
+                    # USDT-RUB
+                    if base == 'USDT' and quote == 'RUB':
+                        binance_usdt_to_rub = PriceRecord(exchange='Binance',
+                                                          symbol=symbol['symbol'],
+                                                          base=base,
+                                                          quote=quote,
+                                                          last_price=symbol['price'],
+                                                          )
+                        drop += 1
+                    #BTC-USDT
+                    elif base == 'BTC' and quote == 'USDT':
+                        binance_btc_to_usdt = PriceRecord(exchange='Binance',
+                                                          symbol=symbol['symbol'],
+                                                          base=base,
+                                                          quote=quote,
+                                                          last_price=symbol['price'],
+                                                          )
+                        drop += 1
+                    #BTC-RUB
+                    elif base == 'BTC' and quote == 'RUB':
+                        binance_btc_to_rub = PriceRecord(exchange='Binance',
+                                                         symbol=symbol['symbol'],
+                                                         base=base,
+                                                         quote=quote,
+                                                         last_price=symbol['price'],
+                                                         )
+                        drop += 1
+                    #collected
+                    if drop == 3:
+                        await self.repo.insert([binance_btc_to_usdt.last_price, binance_btc_to_rub.last_price, binance_usdt_to_rub.last_price])
+                        drop = 0
+                        await sleep(config['BINANCE_SECS_AWAIT'])
+            except Exception as e:
+                try:
+                    await AsyncClient.close_connection(client)
+                    client = await AsyncClient.create()
+                    exchange_info = await client.get_exchange_info()
+                    symbols_mapping = self.get_symbol_mapping(exchange_info)
+                    drop = 0
+                    logger.exception(f'reloading because of {e}')
+                except:
+                    await asyncio.sleep(5) #progressive
+                finally:
                     continue
-                binance_data = PriceRecord(exchange='Binance',
-                                           symbol=symbol['symbol'],
-                                           base=base,
-                                           quote=quote,
-                                           last_price=symbol['price'],
-                                           )
-                await self.repo.insert(binance_data)
-            await sleep(3)
 
 
 class CentralBankExtractor(BaseExtractor):
@@ -88,10 +124,12 @@ class CentralBankExtractor(BaseExtractor):
                 price = soup.findAll("valute", {"id": "R01235"})[0].select('value')[0].getText()
                 price = float(price.replace(',', '.'))
                 cb_data = PriceRecord(exchange='CentralBank',
-                                      symbol='0',
-                                      base='0',
-                                      quote='0',
+                                      symbol='',
+                                      base='',
+                                      quote='',
                                       last_price=price
                                       )
-                await self.repo.insert(cb_data)
-            await asyncio.sleep(HOURS_AWAIT)
+                await self.repo.insert(cb_data.last_price)
+            await asyncio.sleep(config['CB_SECS_AWAIT'])
+
+
