@@ -1,5 +1,5 @@
 <h2 align="center">Stock chart with FastApi and Highcharts JS</h2>
-<div align="center"><img src="demo.png" width=90% height=115%></div>
+<div align="center"><img src="images/demo.png" width=90% height=115%></div>
 
 <br><br>
 
@@ -21,7 +21,7 @@
     <li>time_received - varchar</li>
     <li>price - numeric</li>
 </ul>
-<div align="center"><img src="db_demo.png"></div>
+<div align="center"><img src="images/db_demo.png"></div>
 <h3>pushy_users</h3>
 <ul>
     <li>id - ()int. type - identity</li>
@@ -31,7 +31,7 @@
 <br><br>
 
 <h2>Config structure</h2>
-<div align="center"><img src="yaml_demo.png"></div>
+<div align="center"><img src="images/yaml_demo.png"></div>
 
 <br><br>
 
