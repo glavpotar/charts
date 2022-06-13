@@ -51,7 +51,7 @@
     <br>
     <li> 2. create db with name of "charts_data" and use migrations</li>
     <ul>
-    <li> yoyo apply -d postgresql://<USERNAME>@<HOST>/charts_data </li>
+    <li> yoyo apply -d postgresql://{USERNAME}@{HOST}/charts_data </li>
     </ul>
     <br>
     <li> 3. create session with proper credentials at "create_session.py" </li>
@@ -61,7 +61,7 @@
     <br>
     <li> 4. run "main.py" </li>
     <ul>
-    <li> $python3 main.py </li>
+    <li> $python3 create_session.py </li>
     </ul>
     <br>
     <li> 5.run "headapi.py" </li> 
