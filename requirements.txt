@@ -64,3 +64,5 @@ uvicorn==0.17.6
 websockets==10.3
 yarl==1.7.2
 yoyo-migrations==7.3.2
+yoyo-migrations==7.3.2
+yoyo-migrations==7.3.2
