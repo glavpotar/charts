@@ -3,23 +3,141 @@
 <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+<script src="https://sdk.pushy.me/web/1.0.8/pushy-sdk.js"></script>
+
 <style>
-    #container {
-        height: 400px;
-        min-width: 310px;
+    .duplet {
+        float:left;
+        border : 2px solid yellow;
+        margin-left: 0;
+        margin-right: auto;
         }
+
+    #btc-rub{
+        height: 45%;
+        margin-top: 5%;
+    }
+
+    #usdt-rub{
+        height: 45%;
+    }
+
+    #border-line {
+        size : 4px;
+        width : 45%;
+        color : #FFA500FF;
+        display: block;
+        margin-left: 0;
+        margin-right: auto;
+
+    }
+
+    #btc-usdt{
+        height: 45%;
+        width: 51%;
+        border : 2px solid yellow;
+        margin-right: 0;
+        margin-left: auto;
+        float: right;
+        }
+
 </style>
-<div id="container"></div>
-<script>var seriesOptions = [],
-  seriesCounter = 0,
-  names = ['CB', 'BINANCE'];
-function createChart() {
+<div class="duplet">
+<div id="usdt-rub"></div>
+<div id="btc-rub"></div>
+</div>
+<div id="btc-usdt"></div>
+<!--<script>// Register visitor's browser for push notifications-->
+<!--    Pushy.register({ appId: '627c692c7cbf7cf450888a7a' }).then(function (deviceToken) {-->
+<!--    // Print device token to console-->
+<!--    console.log('Pushy device token: ' + deviceToken);-->
+<!---->
+<!--    // Send the token to your backend server via an HTTP GET request-->
+<!--    //fetch('/repo/' + deviceToken);-->
+<!---->
+<!--    // Succeeded, optionally do something to alert the user-->
+<!--}).catch(function (err) {-->
+<!--    // Handle registration errors-->
+<!--    console.error(err);-->
+<!--});</script>-->
+<!--<input type="button" onclick="Pushy.register()" value="Notification">-->
+<script>
+// const content = [['CB', 'BINANCE'], ['BINANCE'], ['BINANCE']]
+
+
+let
+seriesOptions0 = [],
+seriesOptions1 = [],
+seriesOptions2 = [],
+seriesCounter0 = 0,
+seriesCounter1 = 0,
+seriesCounter2 = 0,
+names0 = ['CB', 'BINANCE', 'USDT-RUB', 'RUB-USDT'],
+names1 = ['BTC-binance', 'BTC-USDT', 'USDT-BTC'],
+names2 = ['BTC-binance', 'BTC-RUB', 'RUB-BTC'];
+
+
+function createChart0() {
   Highcharts.setOptions({
     time: {
         useUTC: false
     }
-});
-  Highcharts.stockChart('container', {
+  });
+  Highcharts.stockChart('usdt-rub', {
+    title :{
+        text : 'rub : cb-binance'
+        },
+    legend :{
+        enabled: true,
+        },
+    navigator:{
+      series:{
+          fillOpacity: 0,
+      }
+    },
+    rangeSelector: {
+      selected: 4
+    },
+    yAxis: {
+      labels: {
+        formatter: function () {
+          return (this.value > 0 ? '  ' : '') + this.value + '₽';
+        }
+      },
+      plotLines: [{
+        value: 0,
+        width: 2,
+        color: 'silver'
+      }]
+    },
+      plotOptions: {
+          series: {
+              compare: 'line',
+              showInNavigator: true
+          }},
+    tooltip: {
+      pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}₽)<br/>',
+      valueDecimals: 2,
+      split: true
+    },
+    series: seriesOptions0
+  });
+}
+
+
+function createChart1() {
+  Highcharts.setOptions({
+    time: {
+        useUTC: false
+    }
+  });
+  Highcharts.stockChart('btc-usdt', {
+    title :{
+        text : 'btc-usdt'
+        },
+    legend :{
+        enabled: true,
+        },
     rangeSelector: {
       selected: 4
     },
@@ -46,27 +164,262 @@ function createChart() {
       valueDecimals: 2,
       split: true
     },
-    series: seriesOptions
+    series: seriesOptions1
   });
 }
-function success(data) {
-  var name = this.url.match(/(cb|binance)/)[0].toUpperCase();
-  var i = names.indexOf(name);
-  seriesOptions[i] = {
-    name: name,
-    data: data
-  };
-  seriesCounter += 1;
-  if (seriesCounter === names.length) {
-    createChart();
-  }
+
+
+function createChart2() {
+  Highcharts.setOptions({
+    time: {
+        useUTC: false
+    }
+  });
+  Highcharts.stockChart('btc-rub', {
+    title :{
+        text : 'btc-rub'
+        },
+    legend :{
+        enabled: true,
+        },
+    rangeSelector: {
+      selected: 4
+    },
+    yAxis: {
+      labels: {
+        formatter: function () {
+          return (this.value > 0 ? '  ' : '') + this.value + '₽';
+        }
+      },
+      legend :{
+        enabled: true
+        },
+
+      plotLines: [{
+        value: 0,
+        width: 2,
+        color: 'silver'
+      }]
+    },
+      plotOptions:{
+        series: {
+            compare: 'line',
+            showInNavigator: true
+      }
+    },
+    tooltip: {
+      pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}₽)<br/>',
+      valueDecimals: 2,
+      split: true
+    },
+    series: seriesOptions2
+  });
 }
+//
+//
+//
+function success_cb_rub(data) {
+    seriesOptions0.push({
+        color : 'skyblue',
+        name: 'CB',
+        data: data
+    });
+    seriesCounter0 += 1;
+    if (seriesCounter0 === names0.length) {
+        createChart0();
+    }
+}
+
+function success_binance_rub(data) {
+    seriesOptions0.push({
+        color: 'orange',
+        name: 'BINANCE',
+        data: data
+    });
+    seriesCounter0 += 1;
+    if (seriesCounter0 === names0.length) {
+        createChart0();
+    }
+}
+
+function success_action_usdt_rub(data) {
+    seriesOptions0.push({
+        color: 'red',
+        name: 'USDT-RUB',
+        lineWidth: 0,
+        data: data,
+        marker:{
+            enabled : true,
+            valueDecimals : 2,
+            radius: 2.7,
+        },
+    });
+    seriesCounter0 += 1;
+    if (seriesCounter0 === names0.length) {
+        createChart0();
+    }
+}
+
+function success_action_rub_usdt(data) {
+    seriesOptions0.push({
+        color: 'blue',
+        name: 'RUB-USDT',
+        lineWidth: 0,
+        data: data,
+        marker:{
+            enabled : true,
+            valueDecimals : 2,
+            radius: 2.7,
+        },
+    });
+    seriesCounter0 += 1;
+    if (seriesCounter0 === names0.length) {
+        createChart0();
+    }
+}
+
+function success_btc_usdt_binance(data) {
+    seriesOptions1.push({
+        name : 'BTC-binance',
+        data: data
+    });
+    seriesCounter1 += 1;
+    if (seriesCounter1 === names1.length) {
+        createChart1();
+    }
+}
+
+function success_action_btc_usdt(data) {
+    seriesOptions1.push({
+        color: 'red',
+        name: 'BTC-USDT',
+        lineWidth: 0,
+        data: data,
+        marker:{
+            enabled : true,
+            valueDecimals : 2,
+            radius: 2.7,
+        },
+    });
+    seriesCounter1 += 1;
+    if (seriesCounter1 === names1.length) {
+        createChart1();
+    }
+}
+
+function success_action_usdt_btc(data) {
+    seriesOptions1.push({
+        color: 'skyblue',
+        name: 'USDT-BTC',
+        lineWidth: 0,
+        data: data,
+        marker:{
+            enabled : true,
+            valueDecimals : 2,
+            radius: 2.7,
+        },
+    });
+    seriesCounter1 += 1;
+    if (seriesCounter1 === names1.length) {
+        createChart1();
+    }
+}
+
+function success_btc_rub_binance(data) {
+    seriesOptions2.push({
+        name : 'BTC-binance',
+        data: data
+    });
+    seriesCounter2 += 1;
+    if (seriesCounter2 === names2.length) {
+        createChart2();
+    }
+}
+
+function success_action_btc_rub(data) {
+    seriesOptions2.push({
+        color: 'red',
+        name: 'BTC-RUB',
+        lineWidth: 0,
+        data: data,
+        marker:{
+            enabled : true,
+            valueDecimals : 2,
+            radius: 2.7,
+        },
+    });
+    seriesCounter2 += 1;
+    if (seriesCounter2 === names2.length) {
+        createChart2();
+    }
+}
+
+function success_action_rub_btc(data) {
+    seriesOptions2.push({
+        color: 'skyblue',
+        name: 'RUB-BTC',
+        lineWidth: 0,
+        data: data,
+        marker:{
+            enabled : true,
+            valueDecimals : 2,
+            radius: 2.7,
+        },
+    });
+    seriesCounter2 += 1;
+    if (seriesCounter2 === names2.length) {
+        createChart2();
+    }
+}
+
 Highcharts.getJSON(
   '/cb',
-  success
+  success_cb_rub
 );
+
 Highcharts.getJSON(
-  '/binance',
-  success
+  'json/usdt_rub',
+  success_binance_rub
 );
+
+Highcharts.getJSON(
+  '/action/output/usdt_rub',
+  success_action_usdt_rub
+);
+
+Highcharts.getJSON(
+  '/action/output/rub_usdt',
+  success_action_rub_usdt
+);
+
+Highcharts.getJSON(
+  '/action/output/btc_usdt',
+  success_action_btc_usdt
+);
+
+Highcharts.getJSON(
+  '/action/output/usdt_btc',
+  success_action_usdt_btc
+);
+
+Highcharts.getJSON(
+  '/action/output/btc_rub',
+  success_action_btc_rub
+);
+
+Highcharts.getJSON(
+  '/action/output/rub_btc',
+  success_action_rub_btc
+);
+
+Highcharts.getJSON(
+  'json/btc_usdt',
+  success_btc_usdt_binance
+);
+
+Highcharts.getJSON(
+  'json/btc_rub',
+  success_btc_rub_binance
+);
+
 </script>
